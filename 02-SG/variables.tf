@@ -1,8 +1,8 @@
-variable "project" {
+variable "Project" {
     default = "Roboshop"
 }
 
-variable "environment" {
+variable "Environment" {
     default = "Dev" 
 }
 
