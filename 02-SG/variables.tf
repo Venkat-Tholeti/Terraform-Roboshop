@@ -13,3 +13,11 @@ variable "Frontend_sg_name" {
 variable "Frontend_sg_description" {
     default = "Security Group For Frontend" 
 }
+
+variable "Bastion_sg_name" {
+    default = "Bastion"
+}
+
+variable "Bastion_sg_description" {
+    default = "Security Group For Bastion" 
+}
