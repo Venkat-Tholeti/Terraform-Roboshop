@@ -24,3 +24,6 @@ data "aws_ami" "joindevops" {
   
 }
 
+data "aws_ssm_parameter" "Bastion_sg_id" {
+  name = "/${var.Project}/${var.Environment}/Bastion_sg_id"
+}
