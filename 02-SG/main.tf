@@ -93,5 +93,13 @@ resource "aws_security_group_rule" "VPN_943" {
 }
 
 
-
+#BACKEND ALB ACCEPTING CONNECTIONS FROM VPN HOST ON PORT 80
+resource "aws_security_group_rule" "Backend_ALB_Connection_From_VPN" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Backend_ALB.sg_id
+}
 
