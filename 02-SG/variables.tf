@@ -23,7 +23,7 @@ variable "Bastion_sg_description" {
 }
 
 variable "Backend_ALB_sg_name" {
-    default = "Backend_ALB"
+    default = "Backend-ALB"
 }
 
 variable "Backend_ALB_sg_description" {
