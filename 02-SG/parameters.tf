@@ -21,3 +21,9 @@ resource "aws_ssm_parameter" "VPN_sg_id" {
   type  = "String"
   value = module.VPN.sg_id
 }
+
+resource "aws_ssm_parameter" "MongoDb_sg_id" {
+  name  = "/${var.Project}/${var.Environment}/MongoDb_sg_id"
+  type  = "String"
+  value = module.MongoDb.sg_id
+}

@@ -103,3 +103,31 @@ resource "aws_security_group_rule" "Backend_ALB_Connection_From_VPN" {
   security_group_id = module.Backend_ALB.sg_id
 }
 
+module "MongoDb" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.MongoDb_sg_name
+    sg_description = var.MongoDb_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORT 22 & 27017
+resource "aws_security_group_rule" "MONGODB_SSH CONNECTION_From_VPN" {
+  count = length(var.MongoDb_Ports_VPN)
+  type              = "ingress"
+  from_port         = var.MongoDb_Ports_VPN[count.index]
+  to_port           = var.MongoDb_Ports_VPN[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.MongoDb.sg_id 
+}
+
+# resource "aws_security_group_rule" "MONGODB_From_VPN" {
+#   type              = "ingress"
+#   from_port         = 27017
+#   to_port           = 27017
+#   protocol          = "tcp"
+#   source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+#   security_group_id = module.MongoDb.sg_id
+# }
