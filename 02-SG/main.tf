@@ -113,7 +113,7 @@ module "MongoDb" {
 }
 
 #MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORT 22 & 27017
-resource "aws_security_group_rule" "MONGODB_SSH CONNECTION_From_VPN" {
+resource "aws_security_group_rule" "MONGODB_SSH_From_VPN" {
   count = length(var.MongoDb_Ports_VPN)
   type              = "ingress"
   from_port         = var.MongoDb_Ports_VPN[count.index]
