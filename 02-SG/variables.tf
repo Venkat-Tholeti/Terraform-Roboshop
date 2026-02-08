@@ -49,3 +49,44 @@ variable "MongoDb_sg_description" {
 variable "MongoDb_Ports_VPN" {
     default = [22, 27017]
 }
+
+
+variable "Redis_sg_name" {
+    default = "MySql"
+}
+
+variable "Redis_sg_description" {
+    default = "Security Group For Redis" 
+}
+
+variable "Redis_Ports_VPN" {
+    default = [22, 6379]
+}
+
+
+
+variable "MySql_sg_name" {
+    default = "MySql"
+}
+
+variable "MySql_sg_description" {
+    default = "Security Group For MySql" 
+}
+
+variable "MySql_Ports_VPN" {
+    default = [22, 3306]
+}
+
+
+
+variable "RabbitMq_sg_name" {
+    default = "RabbitMq"
+}
+
+variable "RabbitMq_sg_description" {
+    default = "Security Group For RabbitMq" 
+}
+
+variable "RabbitMq_Ports_VPN" {
+    default = [22, 5672]
+}

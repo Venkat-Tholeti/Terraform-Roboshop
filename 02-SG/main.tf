@@ -131,3 +131,63 @@ resource "aws_security_group_rule" "MONGODB_SSH_From_VPN" {
 #   source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
 #   security_group_id = module.MongoDb.sg_id
 # }
+
+module "Redis" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.Redis_sg_name
+    sg_description = var.Redis_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+resource "aws_security_group_rule" "Redis_SSH_From_VPN" {
+  count = length(var.Redis_Ports_VPN)
+  type              = "ingress"
+  from_port         = var.Redis_Ports_VPN[count.index]
+  to_port           = var.Redis_Ports_VPN[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Redis.sg_id 
+}
+
+module "MySql" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.MySql_sg_name
+    sg_description = var.MySql_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+resource "aws_security_group_rule" "MySql_SSH_From_VPN" {
+  count = length(var.MySql_Ports_VPN)
+  type              = "ingress"
+  from_port         = var.MySql_Ports_VPN[count.index]
+  to_port           = var.MySql_Ports_VPN[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.MySql.sg_id 
+}
+
+module "RabbitMq" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.RabbitMq_sg_name
+    sg_description = var.RabbitMq_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+resource "aws_security_group_rule" "RabbitMq_SSH_From_VPN" {
+  count = length(var.RabbitMq_Ports_VPN)
+  type              = "ingress"
+  from_port         = var.RabbitMq_Ports_VPN[count.index]
+  to_port           = var.RabbitMq_Ports_VPN[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.RabbitMq.sg_id 
+}
