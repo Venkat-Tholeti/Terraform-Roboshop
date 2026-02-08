@@ -62,7 +62,7 @@ resource "aws_security_group_rule" "VPN_SSH" {
   to_port           = 22
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+  security_group_id = module.VPN.sg_id
 }
 
 resource "aws_security_group_rule" "VPN_https" {
@@ -71,7 +71,7 @@ resource "aws_security_group_rule" "VPN_https" {
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+  security_group_id = module.VPN.sg_id
 }
 
 resource "aws_security_group_rule" "VPN_1194" {
@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "VPN_1194" {
   to_port           = 1194
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+  security_group_id = module.VPN.sg_id
 }
 
 resource "aws_security_group_rule" "VPN_943" {
@@ -89,7 +89,7 @@ resource "aws_security_group_rule" "VPN_943" {
   to_port           = 943
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+  security_group_id = module.VPN.sg_id
 }
 
 
