@@ -29,3 +29,11 @@ variable "Backend_ALB_sg_name" {
 variable "Backend_ALB_sg_description" {
     default = "Security Group For Backend ALB" 
 }
+
+variable "VPN_sg_name" {
+    default = "VPN"
+}
+
+variable "VPN_sg_description" {
+    default = "Security Group For VPN" 
+}

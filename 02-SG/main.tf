@@ -44,3 +44,20 @@ resource "aws_security_group_rule" "Backend_ALB_Connection_From_Bastion" {
   source_security_group_id = module.Bastion.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
   security_group_id = module.Backend_ALB.sg_id
 }
+
+
+module "VPN" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.VPN_sg_name
+    sg_description = var.VPN_sg_description
+    vpc_id = local.vpc_id
+}
+
+
+
+
+
+
+
