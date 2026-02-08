@@ -77,8 +77,6 @@ variable "MySql_Ports_VPN" {
     default = [22, 3306]
 }
 
-
-
 variable "RabbitMq_sg_name" {
     default = "RabbitMq"
 }
