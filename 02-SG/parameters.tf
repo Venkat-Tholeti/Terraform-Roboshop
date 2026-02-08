@@ -27,3 +27,22 @@ resource "aws_ssm_parameter" "MongoDb_sg_id" {
   type  = "String"
   value = module.MongoDb.sg_id
 }
+
+resource "aws_ssm_parameter" "Redis_sg_id" {
+  name  = "/${var.Project}/${var.Environment}/Redis_sg_id"
+  type  = "String"
+  value = module.Redis.sg_id
+}
+
+
+resource "aws_ssm_parameter" "MySql_sg_id" {
+  name  = "/${var.Project}/${var.Environment}/MySql_sg_id"
+  type  = "String"
+  value = module.MySql.sg_id
+}
+
+resource "aws_ssm_parameter" "RabbitMq_sg_id" {
+  name  = "/${var.Project}/${var.Environment}/RabbitMq_sg_id"
+  type  = "String"
+  value = module.RabbitMq.sg_id
+}
