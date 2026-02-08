@@ -25,3 +25,22 @@ resource "aws_security_group_rule" "Bastion_Laptop" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.Bastion.sg_id
 }
+
+module "Backend_ALB" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.Backend_ALB_sg_name
+    sg_description = var.Backend_ALB_sg_description
+    vpc_id = local.vpc_id
+}
+
+#BACKEND ALB ACCEPTING CONNECTIONS FROM BASTION HOST ON PORT 80
+resource "aws_security_group_rule" "Backend_ALB_Connection_From_Bastion" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.Bastion.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Backend_ALB.sg_id
+}

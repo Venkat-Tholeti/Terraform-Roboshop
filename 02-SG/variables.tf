@@ -21,3 +21,11 @@ variable "Bastion_sg_name" {
 variable "Bastion_sg_description" {
     default = "Security Group For Bastion" 
 }
+
+variable "Backend_ALB_sg_name" {
+    default = "Backend_ALB"
+}
+
+variable "Backend_ALB_sg_description" {
+    default = "Security Group For Backend ALB" 
+}
