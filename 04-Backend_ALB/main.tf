@@ -33,3 +33,4 @@ resource "aws_lb_listener" "Backend_ALB" {
       status_code  = "200"
     }
   }
+}
