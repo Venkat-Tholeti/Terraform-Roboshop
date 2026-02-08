@@ -22,10 +22,23 @@ data "aws_ami" "joindevops" {
     } 
 }
 
+
+data "aws_ssm_parameter" "database_subnet_id" {
+  name = "/${var.Project}/${var.Environment}/database_subnet_id"
+}
+
 data "aws_ssm_parameter" "MongoDb_sg_id" {
   name = "/${var.Project}/${var.Environment}/MongoDb_sg_id"
 }
 
-data "aws_ssm_parameter" "database_subnet_id" {
-  name = "/${var.Project}/${var.Environment}/database_subnet_id"
+data "aws_ssm_parameter" "RabbitMq_sg_id" {
+  name = "/${var.Project}/${var.Environment}/RabbitMq_sg_id"
+}
+
+data "aws_ssm_parameter" "Redis_sg_id" {
+  name = "/${var.Project}/${var.Environment}/Redis_sg_id"
+}
+
+data "aws_ssm_parameter" "MySql_sg_id" {
+  name = "/${var.Project}/${var.Environment}/MySql_sg_id"
 }
