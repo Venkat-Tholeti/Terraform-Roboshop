@@ -55,8 +55,42 @@ module "VPN" {
     vpc_id = local.vpc_id
 }
 
+#VPN PORTS 22,443,1194,943
+resource "aws_security_group_rule" "VPN_SSH" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.vpn.sg_id
+}
 
+resource "aws_security_group_rule" "VPN_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.vpn.sg_id
+}
 
+resource "aws_security_group_rule" "VPN_1194" {
+  type              = "ingress"
+  from_port         = 1194
+  to_port           = 1194
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.vpn.sg_id
+}
+
+resource "aws_security_group_rule" "VPN_943" {
+  type              = "ingress"
+  from_port         = 943
+  to_port           = 943
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.vpn.sg_id
+}
 
 
 
