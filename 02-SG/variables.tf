@@ -87,3 +87,13 @@ variable "RabbitMq_sg_description" {
 variable "RabbitMq_Ports_VPN" {
     default = [22, 5672]
 }
+
+
+variable "Catalogue_sg_name" {
+    default = "Catalogue"
+}
+
+variable "Catalogue_sg_description" {
+    default = "Security Group For Catalogue" 
+}
+

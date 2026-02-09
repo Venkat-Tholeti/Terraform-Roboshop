@@ -191,3 +191,67 @@ resource "aws_security_group_rule" "RabbitMq_SSH_From_VPN" {
   source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
   security_group_id = module.RabbitMq.sg_id 
 }
+
+
+module "Catalogue" {
+    source = "git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.Project
+    environment = var.Environment
+    sg_name = var.Catalogue_sg_name
+    sg_description = var.Catalogue_sg_description
+    vpc_id = local.vpc_id
+}
+
+#Catalogue ACCEPTING CONNECTIONS FROM ALB,VPN,BASTION,MongoDB On Ports
+resource "aws_security_group_rule" "Catalogue_Connections_Backend_ALB" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.Backend_ALB.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Catalogue.sg_id 
+}
+
+
+#Catalogue ACCEPTING CONNECTIONS FROM ALB,VPN,BASTION,MongoDB On Ports
+resource "aws_security_group_rule" "Catalogue_Connections_VPN_SSH" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Catalogue.sg_id 
+}
+
+#Catalogue ACCEPTING CONNECTIONS FROM ALB,VPN,BASTION,MongoDB On Ports
+resource "aws_security_group_rule" "Catalogue_Connections_VPN_HTTP" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.VPN.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Catalogue.sg_id 
+}
+
+
+
+#Catalogue ACCEPTING CONNECTIONS FROM ALB,VPN,BASTION,MongoDB On Ports
+resource "aws_security_group_rule" "Catalogue_Connections_Bastion_SSH" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.Bastion.sg_id # HERE WE ARE USING SECURITY GROUP INSTEAD OF CIDR OR IP, BECAUSE IF BASTION INSTANCE GET RECREATED, IP MAY CHANGE SO WE ARE GIVING SG WHERE BASTION RESIDE.
+  security_group_id = module.Catalogue.sg_id 
+}
+
+
+#Catalogue ACCEPTING CONNECTIONS FROM ALB,VPN,BASTION,MongoDB On Ports
+resource "aws_security_group_rule" "Catalogue_Connections_MongoDb_SSH" {
+  type              = "ingress"
+  from_port         = 27017
+  to_port           = 27017
+  protocol          = "tcp"
+  source_security_group_id = module.Catalogue.sg_id # Source is From Catalogue to MongoDb
+  security_group_id = module.MongoDb.sg_id 
+}
