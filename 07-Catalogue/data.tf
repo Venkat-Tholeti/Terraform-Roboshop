@@ -1,6 +1,14 @@
-# DATA SOURCES ARE USED TO FETCH EXISTING INFRASTRUCTURE DETAILS WITHOUT CREATING THEM
-# JUST FETCHING THE DETAILS, READ ONLY MODE #data = read
-# ALREADY AWS LO UNA RESOURCES DETAILS FECTH CHESTHADI
+data "aws_ssm_parameter" "vpc_id" {
+  name = "/${var.Project}/${var.Environment}/vpc_id"
+}
+
+data "aws_ssm_parameter" "private_subnet_id" {
+  name  = "/${var.Project}/${var.Environment}/private_subnet_id"
+}
+
+data "aws_ssm_parameter" "Catalogue_sg_id" {
+  name  = "/${var.Project}/${var.Environment}/Catalogue_sg_id" 
+}
 
 data "aws_ami" "joindevops" {
    owners = [ "973714476881" ]
@@ -20,25 +28,4 @@ data "aws_ami" "joindevops" {
       name = "virtualization-type"
       values = ["hvm"]
     } 
-}
-
-
-data "aws_ssm_parameter" "database_subnet_id" {
-  name = "/${var.Project}/${var.Environment}/database_subnet_id"
-}
-
-data "aws_ssm_parameter" "MongoDb_sg_id" {
-  name = "/${var.Project}/${var.Environment}/MongoDb_sg_id"
-}
-
-data "aws_ssm_parameter" "RabbitMq_sg_id" {
-  name = "/${var.Project}/${var.Environment}/RabbitMq_sg_id"
-}
-
-data "aws_ssm_parameter" "Redis_sg_id" {
-  name = "/${var.Project}/${var.Environment}/Redis_sg_id"
-}
-
-data "aws_ssm_parameter" "MySql_sg_id" {
-  name = "/${var.Project}/${var.Environment}/MySql_sg_id"
 }
