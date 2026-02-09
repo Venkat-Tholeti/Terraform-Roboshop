@@ -64,7 +64,6 @@ variable "Redis_Ports_VPN" {
 }
 
 
-
 variable "MySql_sg_name" {
     default = "MySql"
 }
