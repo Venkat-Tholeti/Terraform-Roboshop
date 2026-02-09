@@ -20,7 +20,7 @@ resource "aws_instance" "Catalogue" {
   instance_type = "t3.micro"
   vpc_security_group_ids  = [local.Catalogue_sg_id]
   subnet_id = local.private_subnet_id
-  iam_instance_profile = "TerraformEC2roleforSSM"
+  
   tags = merge(
     local.common_tags,
   {
