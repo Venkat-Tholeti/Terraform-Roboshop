@@ -88,7 +88,7 @@ resource "aws_instance" "MySql" {
   instance_type = "t3.micro"
   vpc_security_group_ids  = [local.MySql_sg_id]
   subnet_id = local.database_subnet_id
-
+  iam_instance_profile = "TerraformEC2roleforSSM"
   tags = merge(
     local.common_tags,
   {
