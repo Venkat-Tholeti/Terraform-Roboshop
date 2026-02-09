@@ -34,10 +34,10 @@ variable "VPN_sg_name" {
     default = "VPN"
 }
 
-variable "VPN_sg_description" {
-    default = "Security Group For VPN" 
-
+ variable "VPN_sg_description" {
+     default = "Security Group For VPN" 
 }
+
 variable "MongoDb_sg_name" {
     default = "MongoDb"
 }
@@ -52,7 +52,7 @@ variable "MongoDb_Ports_VPN" {
 
 
 variable "Redis_sg_name" {
-    default = "MySql"
+    default = "Redis"
 }
 
 variable "Redis_sg_description" {

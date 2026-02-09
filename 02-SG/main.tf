@@ -141,7 +141,7 @@ module "Redis" {
     vpc_id = local.vpc_id
 }
 
-#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+#Redis ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
 resource "aws_security_group_rule" "Redis_SSH_From_VPN" {
   count = length(var.Redis_Ports_VPN)
   type              = "ingress"
@@ -161,7 +161,7 @@ module "MySql" {
     vpc_id = local.vpc_id
 }
 
-#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+#MySql ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
 resource "aws_security_group_rule" "MySql_SSH_From_VPN" {
   count = length(var.MySql_Ports_VPN)
   type              = "ingress"
@@ -181,7 +181,7 @@ module "RabbitMq" {
     vpc_id = local.vpc_id
 }
 
-#MONGODB ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
+#RabbitMq ACCEPTING CONNECTIONS FROM VPN HOST ON PORTS
 resource "aws_security_group_rule" "RabbitMq_SSH_From_VPN" {
   count = length(var.RabbitMq_Ports_VPN)
   type              = "ingress"
