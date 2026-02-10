@@ -56,3 +56,27 @@ resource "terraform_data" "Catalogue" {
   }
 
 }
+
+resource "aws_ec2_instance_state" "Catalogue" {
+  instance_id = aws_instance.Catalogue.id
+  state       = "stopped"
+  depends_on = [ terraform_data.Catalogue ]
+}
+
+resource "aws_ami_from_instance" "Catalogue" {
+  name    = "${var.Project}-${var.Environment}-Catalogue"
+  source_instance_id = aws_instance.Catalogue.id
+  depends_on = [ aws_ec2_instance_state.Catalogue ]
+}
+
+resource "terraform_data" "Catalogue_Delete" {
+  triggers_replace = [
+    aws_instance.Catalogue.id
+  ]
+  
+  # make sure you have aws configure in your laptop
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.Catalogue.id}"
+  }
+   depends_on = [aws_ami_from_instance.Catalogue]
+}
