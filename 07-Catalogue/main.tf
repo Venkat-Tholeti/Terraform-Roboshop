@@ -88,3 +88,128 @@ resource "terraform_data" "Catalogue_Delete" {
   }
    depends_on = [aws_ami_from_instance.Catalogue]
 }
+
+#CREATING LAUNCH TEMPLATE
+resource "aws_launch_template" "Catalogue" {
+  name = "${var.Project}-${var.Environment}-Catalogue"
+
+  image_id = aws_ami_from_instance.Catalogue.id
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  instance_type = "t3.micro"
+
+  vpc_security_group_ids = [local.Catalogue_sg_id]
+
+  update_default_version = true #Each time we update, new version will become default
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = merge(
+      local.common_tags,
+    {
+      Name = "${var.Project}-${var.Environment}-Catalogue"
+    }
+    )
+  }
+
+ tag_specifications { # WITH INSTANCE EBS WILL ALSO BE CREATED
+    resource_type = "volume"
+
+    tags = merge(
+      local.common_tags,
+    {
+      Name = "${var.Project}-${var.Environment}-Catalogue"
+    }
+    )
+  }
+
+
+  tag_specifications { #Launch Template tags
+    resource_type = "launch_template"
+
+    tags = merge(
+      local.common_tags,
+    {
+      Name = "${var.Project}-${var.Environment}-Catalogue"
+    }
+    )
+  }
+}
+
+#AUTO SCALING 
+
+resource "aws_autoscaling_group" "Catalogue" {
+  name               = "${var.Project}-${var.Environment}-Catalogue"
+  desired_capacity   = 1
+  max_size           = 10
+  min_size           = 1
+  target_group_arns = [aws_lb_target_group.Catalogue.arn]
+  vpc_zone_identifier  = local.private_subnet_ids
+  health_check_grace_period = 90
+  health_check_type         = "ELB"
+
+  launch_template {
+    id      = aws_launch_template.Catalogue.id
+    version = aws_launch_template.Catalogue.latest_version
+  }
+
+  dynamic "tag" {
+    for_each = merge(
+      local.common_tags,
+      {
+        Name = "${var.Project}-${var.Environment}-Catalogue"
+      }
+    )
+    content{
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+    
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+    triggers = ["launch_template"]
+  }
+
+  timeouts{
+    delete = "15m"
+  }
+}
+
+#AutoScaling Policy
+
+resource "aws_autoscaling_policy" "Catalogue" {
+  name = "${var.Project}-${var.Environment}-Catalogue"
+  autoscaling_group_name = aws_autoscaling_group.Catalogue.name
+  policy_type            = "TargetTrackingScaling"
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 75.0
+  }
+}
+
+resource "aws_lb_listener_rule" "Catalogue" {
+  listener_arn = local.backend_alb_listener_arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.Catalogue.arn
+  }
+
+  condition {
+    host_header {
+      values = ["catalogue.backend-${var.Environment}.${var.zone_name}"]
+    }
+  }
+}

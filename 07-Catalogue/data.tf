@@ -35,3 +35,7 @@ data "aws_ssm_parameter" "Catalogue_sg_id" {
 data "aws_ssm_parameter" "private_subnet_id" {
   name = "/${var.Project}/${var.Environment}/private_subnet_id"
 }
+
+data "aws_ssm_parameter" "backend_alb_listener_arn" {
+  name = "/${var.Project}/${var.Environment}/backend_alb_listener_arn"
+}
