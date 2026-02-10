@@ -8,7 +8,7 @@ terraform {
 
  backend "s3" {
   bucket         = "terraform-practice-daws84s"
-  key            = "MongoDb_ROBOSHOP"
+  key            = "Catalogue_ROBOSHOP"
   region         = "us-east-1"
   encrypt        = true
   #dynamodb_table = "terraform-remote-state"

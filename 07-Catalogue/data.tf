@@ -1,14 +1,6 @@
-data "aws_ssm_parameter" "vpc_id" {
-  name = "/${var.Project}/${var.Environment}/vpc_id"
-}
-
-data "aws_ssm_parameter" "private_subnet_id" {
-  name  = "/${var.Project}/${var.Environment}/private_subnet_id"
-}
-
-data "aws_ssm_parameter" "Catalogue_sg_id" {
-  name  = "/${var.Project}/${var.Environment}/Catalogue_sg_id" 
-}
+# DATA SOURCES ARE USED TO FETCH EXISTING INFRASTRUCTURE DETAILS WITHOUT CREATING THEM
+# JUST FETCHING THE DETAILS, READ ONLY MODE #data = read
+# ALREADY AWS LO UNA RESOURCES DETAILS FECTH CHESTHADI
 
 
 data "aws_ami" "joindevops" {
@@ -28,5 +20,18 @@ data "aws_ami" "joindevops" {
     filter {
       name = "virtualization-type"
       values = ["hvm"]
-    } 
+    }
+  
+}
+
+data "aws_ssm_parameter" "vpc_id" {
+  name = "/${var.Project}/${var.Environment}/vpc_id"
+}
+
+data "aws_ssm_parameter" "Catalogue_sg_id" {
+  name = "/${var.Project}/${var.Environment}/Catalogue_sg_id"
+}
+
+data "aws_ssm_parameter" "private_subnet_id" {
+  name = "/${var.Project}/${var.Environment}/private_subnet_id"
 }
