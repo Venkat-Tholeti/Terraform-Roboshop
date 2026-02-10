@@ -67,6 +67,14 @@ resource "aws_ami_from_instance" "Catalogue" {
   name    = "${var.Project}-${var.Environment}-Catalogue"
   source_instance_id = aws_instance.Catalogue.id
   depends_on = [ aws_ec2_instance_state.Catalogue ]
+
+  tags = merge(
+    local.common_tags,
+  {
+    Name = "${var.Project}-${var.Environment}-Catalogue"
+  }
+  )
+
 }
 
 resource "terraform_data" "Catalogue_Delete" {
