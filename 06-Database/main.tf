@@ -168,3 +168,36 @@ resource "terraform_data" "RabbitMq" {
   }
 
 }
+
+resource "aws_route53_record" "MongoDb" {
+  zone_id = var.zone_id
+  name    = "mongodb.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.MongoDb.private_ip]
+}
+
+resource "aws_route53_record" "Redis" {
+  zone_id = var.zone_id
+  name    = "redis.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.Redis.private_ip]
+}
+
+
+resource "aws_route53_record" "MySql" {
+  zone_id = var.zone_id
+  name    = "mysql.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.MySql.private_ip]
+}
+
+resource "aws_route53_record" "RabbitMq" {
+  zone_id = var.zone_id
+  name    = "rabbitmq.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.RabbitMq.private_ip]
+}

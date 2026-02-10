@@ -28,3 +28,31 @@ resource "aws_instance" "Catalogue" {
   }
   )
 }
+
+#Our goal is to connect to infra and install what we need. So we are using terraform data (formerly null resource) and triggers for that.
+resource "terraform_data" "Catalogue" {
+  triggers_replace = [
+    aws_instance.Catalogue.id
+  ]
+  
+  provisioner "file" {
+    source      = "catalogue.sh"
+    destination = "/tmp/catalogue.sh"
+  }
+
+
+ connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = aws_instance.Catalogue.private_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/catalogue.sh",
+      "sudo sh /tmp/catalogue.sh catalogue"
+    ]
+  }
+
+}
