@@ -175,6 +175,7 @@ resource "aws_route53_record" "MongoDb" {
   type    = "A"
   ttl     = 1
   records = [aws_instance.MongoDb.private_ip]
+  allow_overwrite = true
 }
 
 resource "aws_route53_record" "Redis" {
@@ -183,6 +184,7 @@ resource "aws_route53_record" "Redis" {
   type    = "A"
   ttl     = 1
   records = [aws_instance.Redis.private_ip]
+  allow_overwrite = true
 }
 
 
