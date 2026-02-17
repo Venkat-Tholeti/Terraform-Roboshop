@@ -14,10 +14,3 @@ variable "zone_name" {
   default = "devopsaws.store"
 }
 
-variable "Component" {
-    default = {}
-}
-
-variable "rule_priority" {
-    default = {}
-}

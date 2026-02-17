@@ -1,199 +1,69 @@
-resource "aws_lb_target_group" "main" {
-  name     = "${var.Project}-${var.Environment}-${var.Component}" #roboshop-dev-${var.Component}
-  port     = local.tg_port
-  protocol = "HTTP"
-  vpc_id   = local.vpc_id
-  deregistration_delay = 120
-  health_check {
-    healthy_threshold = 2
-    interval = 5
-    matcher = "200-299"
-    path = local.health_check_path
-    port = local.tg_port
-    timeout = 2
-    unhealthy_threshold = 3
+resource "aws_cloudfront_distribution" "roboshop" {
+  origin {
+    domain_name = "cdn.${var.zone_name}"
+    custom_origin_config  {
+        http_port              = 80 // Required to be set but not used
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+    }
+    origin_id                = "cdn.${var.zone_name}"
   }
-}
 
-resource "aws_instance" "main" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  vpc_security_group_ids = [local.sg_id]
-  subnet_id = local.private_subnet_id
-  #iam_instance_profile = "EC2RoleToFetchSSMParams"
+  enabled             = true
+
+  aliases = ["cdn.daws84s.site"]
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "cdn.${var.zone_name}"
+
+    viewer_protocol_policy = "https-only"
+    cache_policy_id  = data.aws_cloudfront_cache_policy.cacheDisable.id
+  }
+
+  # Cache behavior with precedence 0
+  ordered_cache_behavior {
+    path_pattern     = "/media/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "cdn.${var.zone_name}"
+
+    viewer_protocol_policy = "https-only"
+    cache_policy_id  = data.aws_cloudfront_cache_policy.cacheEnable.id
+  }
+
+
+  price_class = "PriceClass_200"
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA", "GB", "DE"]
+    }
+  }
+
   tags = merge(
-    local.common_tags,
-    {
-        Name = "${var.Project}-${var.Environment}-${var.Component}"
+    local.common_tags,{
+        Name = "${var.Project}-${var.Environment}"
     }
   )
-}
 
-resource "terraform_data" "main" {
-  triggers_replace = [
-    aws_instance.main.id
-  ]
-  
-  provisioner "file" {
-    source      = "bootstrap.sh"
-    destination = "/tmp/${var.Component}.sh"
-  }
-
-  connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    password = "DevOps321"
-    host     = aws_instance.main.private_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/${var.Component}.sh",
-      "sudo sh /tmp/${var.Component}.sh ${var.Component} ${var.Environment}"
-    ]
+  viewer_certificate {
+    acm_certificate_arn = local.acm_certificate_arn
+    ssl_support_method = "sni-only"
   }
 }
 
-resource "aws_ec2_instance_state" "main" {
-  instance_id = aws_instance.main.id
-  state       = "stopped"
-  depends_on = [terraform_data.main]
-}
+resource "aws_route53_record" "frontend_alb" {
+  zone_id = var.zone_id
+  name    = "cdn.${var.zone_name}" #dev.daws84s.site
+  type    = "A"
 
-resource "aws_ami_from_instance" "main" {
-  name               = "${var.Project}-${var.Environment}-${var.Component}"
-  source_instance_id = aws_instance.main.id
-  depends_on = [aws_ec2_instance_state.main]
-  tags = merge(
-    local.common_tags,
-    {
-      Name = "${var.Project}-${var.Environment}-${var.Component}"
-    }
-  )
-}
-
-resource "terraform_data" "main_delete" {
-  triggers_replace = [
-    aws_instance.main.id
-  ]
-  
-  # make sure you have aws configure in your laptop
-  provisioner "local-exec" {
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.main.id}"
-  }
-
-  depends_on = [aws_ami_from_instance.main]
-}
-
-resource "aws_launch_template" "main" {
-  name = "${var.Project}-${var.Environment}-${var.Component}"
-
-  image_id = aws_ami_from_instance.main.id
-  instance_initiated_shutdown_behavior = "terminate"
-  instance_type = "t3.micro"
-  vpc_security_group_ids = [local.sg_id]
-  update_default_version = true # each time you update, new version will become default
-  tag_specifications {
-    resource_type = "instance"
-    # EC2 tags created by ASG
-    tags = merge(
-      local.common_tags,
-      {
-        Name = "${var.Project}-${var.Environment}-${var.Component}"
-      }
-    )
-  }
-
-  # volume tags created by ASG
-  tag_specifications {
-    resource_type = "volume"
-
-    tags = merge(
-      local.common_tags,
-      {
-        Name = "${var.Project}-${var.Environment}-${var.Component}"
-      }
-    )
-  }
-
-  # launch template tags
-  tags = merge(
-      local.common_tags,
-      {
-        Name = "${var.Project}-${var.Environment}-${var.Component}"
-      }
-  )
-
-}
-
-resource "aws_autoscaling_group" "main" {
-  name                 = "${var.Project}-${var.Environment}-${var.Component}"
-  desired_capacity   = 1
-  max_size           = 10
-  min_size           = 1
-  target_group_arns = [aws_lb_target_group.main.arn]
-  vpc_zone_identifier  = local.private_subnet_ids
-  health_check_grace_period = 90
-  health_check_type         = "ELB"
-
-  launch_template {
-    id      = aws_launch_template.main.id
-    version = aws_launch_template.main.latest_version
-  }
-
-  dynamic "tag" {
-    for_each = merge(
-      local.common_tags,
-      {
-        Name = "${var.Project}-${var.Environment}-${var.Component}"
-      }
-    )
-    content{
-      key                 = tag.key
-      value               = tag.value
-      propagate_at_launch = true
-    }
-    
-  }
-
-  instance_refresh {
-    strategy = "Rolling"
-    preferences {
-      min_healthy_percentage = 50
-    }
-    triggers = ["launch_template"]
-  }
-
-  timeouts{
-    delete = "15m"
-  }
-}
-
-resource "aws_autoscaling_policy" "main" {
-  name                   = "${var.Project}-${var.Environment}-${var.Component}"
-  autoscaling_group_name = aws_autoscaling_group.main.name
-  policy_type            = "TargetTrackingScaling"
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
-
-    target_value = 75.0
-  }
-}
-
-resource "aws_lb_listener_rule" "main" {
-  listener_arn = local.alb_listener_arn
-  priority     = var.rule_priority
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
-  }
-
-  condition {
-    host_header {
-      values = [local.rule_header_url]
-    }
+  alias {
+    name                   = aws_cloudfront_distribution.roboshop.domain_name
+    zone_id                = aws_cloudfront_distribution.roboshop.hosted_zone_id
+    evaluate_target_health = true
   }
 }
