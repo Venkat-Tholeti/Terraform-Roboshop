@@ -5,10 +5,18 @@ variable "project" {
 variable "environment"{
     default = "Dev"
 }
-variable "sg_name" {
+variable "frontend_sg_name" {
     default = "Frontend"  
 }
 
-variable "sg_description" {
+variable "frontend_sg_description" {
     default = "Sg for Frontend" 
+}
+
+variable "bastion_sg_name" {
+    default = "Bastion"  
+}
+
+variable "bastion_sg_description" {
+    default = "Sg for Bastion" 
 }
