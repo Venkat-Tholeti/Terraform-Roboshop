@@ -8,7 +8,7 @@ terraform {
 
     backend "s3" {
         bucket         = "my-terraform-state-bucket-vt" 
-        key            = "SG-Roboshop"
+        key            = "Bastion-Roboshop"
         region         = "us-east-1"
         encrypt        = true
         use_lockfile   =  true
