@@ -12,7 +12,3 @@ variable "sg_name" {
 variable "sg_description" {
     default = "Sg for Frontend" 
 }
-
-variable "vpc_id" {
-  default = 
-}

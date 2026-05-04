@@ -1,4 +1,4 @@
-module "Frontend" {
+module "frontend" {
     source = "../../Terraform-Module-SG"
     project = var.project
     environment = var.environment
