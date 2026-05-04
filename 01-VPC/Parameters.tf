@@ -9,3 +9,15 @@ resource "aws_ssm_parameter" "public_subnet_ids" {
   type        = "StringList"
   value       = join(",",module.vpc.public_subnet_ids) #this is because parameter is expecting string list with commas so convert list to string using join function
 }
+
+resource "aws_ssm_parameter" "private_subnet_ids" {
+  name        = "/${var.project}/${var.environment}/private_subnet_ids"
+  type        = "StringList"
+  value       = join(",",module.vpc.private_subnet_ids) #this is because parameter is expecting string list with commas so convert list to string using join function
+}
+
+resource "aws_ssm_parameter" "database_subnet_ids" {
+  name        = "/${var.project}/${var.environment}/database_subnet_ids"
+  type        = "StringList"
+  value       = join(",",module.vpc.database_subnet_ids) #this is because parameter is expecting string list with commas so convert list to string using join function
+}
