@@ -8,3 +8,8 @@ module "vpc" {
     database_subnet_cidr = var.databasesubnet_cidr
   
 }
+
+# output "vpc_id" {
+#   value = module.vpc.vpc_id #vpc_id here is the output name of Module VPC, check in module-vpc for more
+# } # instead of this wrote parameters.terraform
+  
