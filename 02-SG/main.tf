@@ -1,5 +1,6 @@
 module "frontend" {
-    source = "../../Terraform-Module-SG"
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
     project = var.project
     environment = var.environment
     securitygroup_name = var.sg_name
