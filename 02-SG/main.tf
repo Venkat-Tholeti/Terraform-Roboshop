@@ -4,4 +4,5 @@ module "frontend" {
     environment = var.environment
     securitygroup_name = var.sg_name
     securitygroup_desc = var.sg_description
+    vpc_id = local.vpc_id
 }
