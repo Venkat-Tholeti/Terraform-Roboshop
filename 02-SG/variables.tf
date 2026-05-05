@@ -20,3 +20,11 @@ variable "bastion_sg_name" {
 variable "bastion_sg_description" {
     default = "Sg for Bastion" 
 }
+
+variable "Internal_ALB_sg_name" {
+    default = "Internal_ALB"  
+}
+
+variable "Internal_ALB_sg_description" {
+    default = "sg for internal alb" 
+}

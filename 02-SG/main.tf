@@ -28,3 +28,23 @@ resource "aws_security_group_rule" "bastion_laptop" {
   security_group_id = module.bastion.sg_id
 }
 
+module "Internal_ALB" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.Internal_ALB_sg_name
+    securitygroup_desc = var.Internal_ALB_sg_description
+    vpc_id = local.vpc_id
+}
+
+
+#BackendALB accepting connection from BastionHost
+resource "aws_security_group_rule" "BackendALBAcceptingConnectionFromBastion" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.Internal_ALB.sg_id
+}
