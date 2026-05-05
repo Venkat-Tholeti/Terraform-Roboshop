@@ -28,3 +28,11 @@ variable "Internal_ALB_sg_name" {
 variable "Internal_ALB_sg_description" {
     default = "sg for internal alb" 
 }
+
+variable "vpn_sg_name" {
+    default = "vpn"  
+}
+
+variable "vpn_sg_description" {
+    default = "sg for vpn" 
+}
