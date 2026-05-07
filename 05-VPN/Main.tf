@@ -4,6 +4,7 @@ resource "aws_instance" "vpn" {
    vpc_security_group_ids = [local.vpn_sg_id]
    subnet_id = local.public_subnet_ids
    key_name = "KEY2026" #make sure this key exist in AWS
+   user_data = file("openvpn.sh")
    
    tags = merge(
       local.common_tags,
