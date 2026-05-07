@@ -127,3 +127,67 @@ resource "aws_security_group_rule" "mongodb_vpn" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.mongodb.sg_id
 }
+
+module "redis" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.redis_sg_name
+    securitygroup_desc = var.redis_sg_description
+    vpc_id = local.vpc_id
+}
+
+#Redis accepting connections from VPN to verify only
+resource "aws_security_group_rule" "redis_vpn" {
+  count = length(var.redis_ports_vpn)
+  type              = "ingress"
+  from_port         = var.redis_ports_vpn[count.index]
+  to_port           = var.redis_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.redis.sg_id
+}
+
+module "mysql" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.mysql_sg_name
+    securitygroup_desc = var.mysql_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MySql accepting connections from VPN to verify only
+resource "aws_security_group_rule" "mysql_vpn" {
+  count = length(var.mysql_ports_vpn)
+  type              = "ingress"
+  from_port         = var.mysql_ports_vpn[count.index]
+  to_port           = var.mysql_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mysql.sg_id
+}
+
+
+module "rabbitmq" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.rabbitmq_sg_name
+    securitygroup_desc = var.rabbitmq_sg_description
+    vpc_id = local.vpc_id
+}
+
+#RabbitMq accepting connections from VPN to verify only
+resource "aws_security_group_rule" "rabbitmq_vpn" {
+  count = length(var.rabbitmq_ports_vpn)
+  type              = "ingress"
+  from_port         = var.rabbitmq_ports_vpn[count.index]
+  to_port           = var.rabbitmq_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.rabbitmq.sg_id
+}

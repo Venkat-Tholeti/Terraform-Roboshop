@@ -48,3 +48,39 @@ variable "mongodb_sg_description" {
 variable "mongodb_ports_vpn" {
     default = [22, 27017]
 }
+
+variable "redis_sg_name" {
+    default = "redis"  
+}
+
+variable "redis_sg_description" {
+    default = "sg for redis" 
+}
+
+variable "redis_ports_vpn" {
+    default = [22, 6379]
+}
+
+variable "mysql_sg_name" {
+    default = "mysql"  
+}
+
+variable "mysql_sg_description" {
+    default = "sg for mysql" 
+}
+
+variable "mysql_ports_vpn" {
+    default = [22, 3306]
+}
+
+variable "rabbitmq_sg_name" {
+    default = "rabbitmq"  
+}
+
+variable "rabbitmq_sg_description" {
+    default = "sg for rabbitmq" 
+}
+
+variable "rabbitmq_ports_vpn" {
+    default = [22, 5672]
+}
