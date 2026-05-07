@@ -30,7 +30,7 @@ variable "Internal_ALB_sg_description" {
 }
 
 variable "hosted_zone_id" {
-  default = "Z04803303VFTPZATMTQ6X"
+  default = "Z02025832NKTXYS2ALMGX"
 }
 
 variable "zone_name" {
