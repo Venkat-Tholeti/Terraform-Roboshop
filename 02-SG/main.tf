@@ -191,3 +191,56 @@ resource "aws_security_group_rule" "rabbitmq_vpn" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.rabbitmq.sg_id
 }
+
+module "catalogue" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.catalogue_sg_name
+    securitygroup_desc = var.catalogue_sg_description
+    vpc_id = local.vpc_id
+}
+
+#Catalogue accepting connections from InternalALB 
+resource "aws_security_group_rule" "catalogue_internal_alb" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.Internal_ALB.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+#Catalogue accepting connections from VPN
+resource "aws_security_group_rule" "vpn_catalogue" {
+  count = length(var.catalogue_ports_vpn)
+  type              = "ingress"
+  from_port         = var.catalogue_ports_vpn[count.index]
+  to_port           = var.catalogue_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+
+#Catalogue accepting connections from Bastion
+resource "aws_security_group_rule" "catalogue_bastion_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+
+#MongoDb accepting connections from Catalogue
+resource "aws_security_group_rule" "mongodb_catalogue" {
+  type              = "ingress"
+  from_port         = 27017
+  to_port           = 27017
+  protocol          = "tcp"
+  source_security_group_id = module.catalogue.sg_id
+  security_group_id = module.mongodb.sg_id
+}
