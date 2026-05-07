@@ -35,3 +35,16 @@ resource "aws_lb_listener" "Internal_ALB" {
     }
   }
 }
+
+# Create the Route 53 Alias Record
+resource "aws_route53_record" "Internal_ALB" {
+  zone_id = var.hosted_zone_id # ID of your Route 53 hosted zone
+  name    = "*.internal-alb.${var.zone_name}" # *.internal-alb.devopsaws.store
+  type    = "A"
+
+  alias {
+    name                   = module.Internal_ALB.dns_name #FOR DNS NAME
+    zone_id                = module.Internal_ALB.zone_id #This is the zone ID of ALB
+    evaluate_target_health = true
+  }
+}

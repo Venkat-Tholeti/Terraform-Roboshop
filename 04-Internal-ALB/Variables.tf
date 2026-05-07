@@ -28,3 +28,12 @@ variable "Internal_ALB_sg_name" {
 variable "Internal_ALB_sg_description" {
     default = "sg for internal alb" 
 }
+
+variable "hosted_zone_id" {
+  default = "Z04803303VFTPZATMTQ6X"
+}
+
+variable "zone_name" {
+    default = "devopsaws.store"
+  
+}
