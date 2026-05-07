@@ -89,6 +89,7 @@ resource "aws_instance" "mysql" {
    instance_type = var.instance_size
    vpc_security_group_ids = [local.mysql_sg_id]
    subnet_id = local.database_subnet_ids
+   iam_instance_profile = "Ec2RoleToFetchSSMParameters" #This role is used To Fetch Mysql root password from SSM parameter store
    
    tags = merge(
       local.common_tags,
