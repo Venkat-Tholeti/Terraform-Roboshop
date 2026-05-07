@@ -36,3 +36,15 @@ variable "vpn_sg_name" {
 variable "vpn_sg_description" {
     default = "sg for vpn" 
 }
+
+variable "mongodb_sg_name" {
+    default = "mongodb"  
+}
+
+variable "mongodb_sg_description" {
+    default = "sg for mongodb" 
+}
+
+variable "mongodb_ports_vpn" {
+    default = [22, 27017]
+}

@@ -106,3 +106,24 @@ resource "aws_security_group_rule" "Internal_ALB_VPN" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.Internal_ALB.sg_id
 }
+
+module "mongodb" {
+    #source = "../../Terraform-Module-SG"
+    source ="git::https://github.com/Venkat-Tholeti/Terraform-Module-SG.git?ref=main"
+    project = var.project
+    environment = var.environment
+    securitygroup_name = var.mongodb_sg_name
+    securitygroup_desc = var.mongodb_sg_description
+    vpc_id = local.vpc_id
+}
+
+#MOngodb accepting connections from VPN to verify only
+resource "aws_security_group_rule" "mongodb_vpn" {
+  count = length(var.mongodb_ports_vpn)
+  type              = "ingress"
+  from_port         = var.mongodb_ports_vpn[count.index]
+  to_port           = var.mongodb_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mongodb.sg_id
+}
