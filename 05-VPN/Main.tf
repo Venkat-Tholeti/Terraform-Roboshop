@@ -16,7 +16,7 @@ resource "aws_instance" "vpn" {
 
 resource "aws_route53_record" "vpn" {
   zone_id = var.hosted_zone_id # ID of your Route 53 hosted zone
-  name    = "vpn.${var.zone_name}" # rabbitmq.devopsaws.store
+  name    = "vpn.${var.zone_name}" # vpn.devopsaws.store
   type    = "A"
   ttl     = 1
   records = [aws_instance.vpn.public_ip]
